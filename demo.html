@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Websocket demo</title>
+    <meta name="description" content="description" />
+    <meta name="author" content="author" />
+    <meta name="keywords" content="keywords" />
+    <link
+      rel="stylesheet"
+      href="https://gymburgdorf.github.io/helpers/basicstyle.css"
+      type="text/css"
+    />
+    <style type="text/css"></style>
+    <script src="WebsocketClient.js"></script>
+  </head>
+  <body>
+    <h1>Websocket Demo</h1>
+    <div>
+      <div class="userlist"></div>
+      <input class="message" />
+      <button class="sendToAll">send to all</button>
+      <button class="sendToOpener">send to opener</button>
+      <button class="sendToUser">send to user</button>
+    </div>
+    <div class="log"></div>
+    <script type="module">
+      sessionStorage.user =
+        sessionStorage.user || `🚀 ${Date.now().toString(32).slice(-8)}`;
+      const ws = await WS.connect('demoroom', sessionStorage.user);
+      log(`${ws.username} connected!`, ws);
+      ws.onMessage((msg) => log(JSON.stringify(msg)));
+      ws.onUserStatus(showUsers);
+      ws.getUsers();
+
+      function showUsers(userlist) {
+        document.querySelector('.userlist').innerHTML = userlist
+          .map((u) => `<span>${u}</span>`)
+          .join('');
+      }
+
+      function log(m) {
+        const l = document.querySelector('.log');
+        l.insertAdjacentHTML('beforeEnd', `<div>${m}</div>`);
+      }
+
+      document.querySelector('.sendToAll').addEventListener('click', () => {
+        ws.sendToAll(document.querySelector('.message').value);
+      });
+      document.querySelector('.sendToOpener').addEventListener('click', () => {
+        ws.sendToOpener(document.querySelector('.message').value);
+      });
+      document.querySelector('.sendToUser').addEventListener('click', () => {
+        ws.sendToUser(
+          document.querySelector('.message').value,
+          'user selection not implemented in demo'
+        );
+      });
+    </script>
+  </body>
+</html>

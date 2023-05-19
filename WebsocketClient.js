@@ -1,6 +1,8 @@
-const myUrl = location.host.includes('local.webcontainer')
-  ? window.location.host
-  : 'websocket.hidora.com';
+// const myUrl = location.host.includes('local.webcontainer')
+//   ? window.location.host
+//   : 'websocket.hidora.com';
+
+const myUrl = "ws.3e8.ch"
 
 function getRemover(target, listenerFunction) {
   return {
